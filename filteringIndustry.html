@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Data Filter</title>
+    <link rel="stylesheet" type="text/css" href="../../css/styles.css"/>
+    <script type="text/javascript" src="../../lib/d3.js"></script>
+</head>
+
+<body>
+  <script type="text/javascript">
+  var data = [
+    { returns: 10, category: "Retail" },
+    { returns: 50, category: "Financial" },
+    { returns: 80, category: "Manufacturing" },
+    { returns: 40, category: "Retail" },
+    { returns: 100, category: "Financial" },
+    { returns: 30, category: "Retail" },
+    { returns: 90, category: "Manufacturing" },
+    { returns: 70, category: "Financial" },
+    { returns: 20, category: "Retail" },
+];
+
+function render(data, category) {
+  d3.select("body").selectAll("div.h-bar") //declaring our visual set
+    .data(data)     //declare our data set
+    .enter()  //select all elements that are not yet defined
+    .append("div") //for all those that are not defined add a div with class h-bar with a child span element inside
+        .attr("class", "h-bar")
+        .append("span");
+
+  // why is exit coming before update?
+  d3.select("body").selectAll("div.h-bar")
+      .data(data)
+    .exit().remove();
+
+  d3.select("body").selectAll("div.h-bar")
+      .data(data)
+    .attr("class", "h-bar") 
+    .style("width", function(d){
+      return (d.returns * 5) + "px"; //the value of width is a function; this is mapping from data domain to visual domain
+     })
+    .select("span") 
+    .text(function(d){
+      return d.category;
+    });
+
+  d3.select("body").selectAll("div.h-bar")
+    .filter(function(d,i) {//the given function for filter has 3 parameters, d = data, i = index, and this reference point to current Dom
+      return d.category == category;
+    })
+    .classed("selected", true);
+}
+
+render(data);//doesn't render require two parameters? assuming category is optional
+
+function select(category) {
+  render(data, category);
+}
+  </script>
+  <div class="control-group">
+    <button onclick="select('Retail')">
+      Retail
+  </button>
+    <button onclick="select('Financial')">
+    Financial
+  </button>
+    <button onclick="select('Manufacturing')">
+    Manufacturing
+  </button>
+    <button onclick="select()"> <!-- pass nothing into category, just render(data) will be invoked -->
+    Clear
+  </button>
+  </div>
+</body>
