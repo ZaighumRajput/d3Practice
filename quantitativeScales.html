@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Loading from Server</title>
+<link rel="stylesheet" type="text/css" href="../../css/styles.css"/>
+<script type="text/javascript" src="../../lib/d3.js"></script>
+</head>
+
+<body>
+<!--Elements to bind to -->
+<div id="linear" class="clear"> <span>n</span> </div>
+<div id="linear-capped" class="clear"> <span>1 &lt; = a*n + b &lt;= 20</span> </div>
+<div id="power" class="clear"> <span>n^2</span> </div>
+<div id="log" class="clear"> <span>log(n)</span> </div>
+
+<script>
+// Data
+var max = 11;
+var data = [];
+for(i = 1; i < max; i++) { data.push(i); }
+// Different Scale Generations
+var linear = d3.scale.linear().domain([1,10]).range([1,10]);
+var linearCapped = d3.scale.linear().domain([1,10]).range([1,20]);
+var pow = d3.scale.pow().exponent(2);
+var log = d3.scale.log();
+// Render function
+function render(data, scale, selector) {
+  d3.select(selector).selectAll("div.cell")
+    .data(data)
+    .enter().append("div").classed("cell", true);
+//enter
+
+//exit 
+d3.select(selector).selectAll("div.cell")
+    .data(data)
+    .exit().remove();
+//update
+d3.select(selector).selectAll("div.cell")
+    .data(data)
+    .style("display", "inline-block")
+    .text(function (d) {
+        return d3.round(scale(d), 2);
+        });
+}
+render(data, linear, "#linear");
+render(data, linearCapped, "#linear-capped");
+render(data, pow, "#power");
+render(data, log, "#log");
+</script>
+</body>
