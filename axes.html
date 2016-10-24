@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Line Generator</title>
+<link rel="stylesheet" type="text/css" href="../../css/styles.css"/>
+<script type="text/javascript" src="../../lib/d3.js"></script>
+</head>
+
+<body>
+	<script type="text/javascript">
+	//svg canvas properties
+	var height = 500,
+		width = 500,
+		margin = 25,
+		offset = 50, //what's offset
+		axisWidth = width -2 * margin,
+		svg;
+
+	//create SVG element
+	function createSvg() {
+		svg = d3.select("body").append("svg")
+			.attr("class", "axis")
+		 	.attr("width", width)
+			.attr("height", height);
+	}	
+
+	function renderAxis(scale, i, orient) {
+		//render the axis on the SVG canvas
+		var axis = d3.svg.axis()
+			.scale(scale) //d3.scale...
+			.orient(orient)// bottom, top, left, right
+			.ticks(10);
+
+		svg.append("g")//svg:g container is used to host all SVG Structure that 
+			//requerd to render an axis
+			.attr("transform", function() {
+					if(["top", "bottom"].indexOf(orient) >= 0)
+						return "translate("+margin+", "+i*offset+")";
+					else
+						return "translate("+i*offset+", "+margin+")";
+			})
+			.call(axis);//d3.selection.call invokes the given function with the 
+				//current selection passed in as an argument
+				//so "svg:g" is being based in
+				// function passed in should have the form function foo(selection0)
+	}
+	createSvg();
+	renderAxis(d3.scale.linear()
+			.domain([0, 10000])
+			.range([0, axisWidth]), 1, 'bottom');
+
+	</script>
+</body>
+
+
